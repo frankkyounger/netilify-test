@@ -40,9 +40,25 @@
     <main>
         <p>This is a basic HTML page structure. You can add more content here as needed!</p>
         <a href="#">Click here for more information</a>
+        <button id="login-button" onclick="netlifyIdentity.open()">Log in with Netlify</button>
     </main>
     <footer>
         <p>&copy; 2024 Simple Web Page. All rights reserved.</p>
     </footer>
+    <script>
+        // Initialize Netlify Identity
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", (user) => {
+                if (!user) {
+                    window.netlifyIdentity.open();
+                }
+            });
+        }
+
+        // Event listener for login button
+        document.getElementById("login-button").addEventListener("click", () => {
+            netlifyIdentity.open();
+        });
+    </script>
 </body>
 </html>
