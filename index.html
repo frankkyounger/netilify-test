@@ -46,20 +46,39 @@
     <footer>
         <p>&copy; 2024 Simple Web Page. All rights reserved.</p>
     </footer>
-    <script>
+        <script>
         // Initialize Netlify Identity
         if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", (user) => {
+            window.netlifyIdentity.on("init", user => {
                 if (!user) {
-                    window.netlifyIdentity.open();
+                    // Add a listener to the login button to open the Netlify Identity modal
+                    document.getElementById("login-button").addEventListener("click", () => {
+                        netlifyIdentity.open();
+                    });
                 }
+            });
+
+            // Handle login event
+            window.netlifyIdentity.on("login", user => {
+                console.log("User logged in:", user);
+                // Use the access token for further API calls
+                fetchUserData(user.token.access_token);
             });
         }
 
-        // Event listener for login button
-        document.getElementById("login-button").addEventListener("click", () => {
-            netlifyIdentity.open();
-        });
+        function fetchUserData(token) {
+            // Fetch user data using the access token
+            fetch("https://o-auth-testing.netlify.app/.netlify/identity/user", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("User Data:", data);
+            })
+            .catch(error => console.error("Error fetching user data:", error));
+        }
     </script>
 </body>
 </html>
